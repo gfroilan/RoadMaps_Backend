@@ -281,3 +281,237 @@ newHeading.id = 'task-title';
 newHeading.appendChild(document.createTextNode('Task List'));
 //Get the old heading
 const oldHeading = document. getElementById('task-title');
+// Get parent
+const cardAction = document.querySelector('.card-action');
+// Replace
+cardAction.replaceChild(newHeading, oldHeading);
+
+// REMOVE ELEMENT
+const lis = document.querySelectorAll('li');
+const list = document.querySelector('ul');
+// Remove first list item
+lis[0].remove();
+// Remove child element
+list.removeChild(lis[3]);
+
+// CLASSES & ATTR
+const firstLi = document.querySelector('li:first-child');
+const link = firstLi.children[0];
+let val;
+
+// Classes
+val = link.className; // Returns strings of class name
+val = link.classList; // Returns a DOMToken list of the class names
+val = link.classList[0]; // Returns the first element within a list of class names
+link.classList.add('test');
+link.classList.remove('test');
+val = link;
+
+// Attributes
+val = link.getAttribute('href');
+val = link.setAttribute('href', 'http://google.com');
+link.setAttribute('title', 'Google');
+val = link.hasAttribute('href');                        // Returns true as the link <a> has an href attribute of #
+link.removeAttribute('title');
+
+// EVENT LISTENERS & THE EVENT OBJECT
+document.querySelector('.clear-tasks').addEventListener('click', function(e){
+    console.log('Hello World');
+
+    e.preventDefault();                                 // Prevents default link behavior so that Hello World stays in the console log # does the same    
+});
+
+document.querySelector('clear-tasks').addEventListener('click', onClick);
+
+function onClick(e){
+    console.log('Clicked');
+
+    let val;
+    val = e;
+    // Event target element
+    val = e.target;                                     // Returns html element a
+    val = e.target.id;                                  // Returns id of link element
+    val = e.className;                                  // Returns the className of link element
+    val = e.target.classList;                           // Returns a list of class names of the link element
+    e.target.innerText = 'Hello';                       // Changes text in button to Hello
+
+    // Event type
+    val = e.type;                                       // Returns type of event we are looking for (mouse click)
+
+    // Timestamp
+    val = e.timeStamp;
+
+    // Coords event relative to the window
+    val = e.clientY;
+    val = e.clientX;
+
+    // Coords event relative to the element
+    val = e.offsetY;
+    val = e.offsetX;
+} // Using a named function is cleaner code
+
+// MOUSE EVENTS
+const clearBtn = document.querySelector('.clear-tasks');
+const card = document.querySelector('.card');
+const heading = document.querySelector('h5');
+
+// Click
+clearBtn.addEventListener('click', runEvent);
+// Doubleclick
+clearBtn.addEventListener('dblclick', runEvent);
+// Mousedown (click and hold)
+clearBtn.addEventListener('mousedown', runEvent);
+// Mouseup (let go of mouse)
+clearBtn.addEventListener('mouseup', runEvent);
+// MouseEnter (mouse while holding on click enters into target space)
+clearBtn.addEventListener('mouseenter', runEvent);
+// Mouseleave (mouse while holding on click leaves a target space)
+card.addEventListener('mouseleave', runEvent);
+// Mouseover (mouse hovers and enters any space)
+card.addEventListener('mouseover', runEvent);
+// Mouseout (mouse hovers and leaves any space)
+card.addEventListener('mouseout', runEvent);
+// Mousemove (Tracks any mouse movement within the element)
+card.addEventListener('mousemove', runEvent);
+
+// Event Handler
+function runEvent(e) {
+    console.log(`EVENT TYPE: ${e.type}`);
+
+    heading.textContent = `MouseX: ${e.offsetX} MouseY: ${e.offsetY}`;
+    // this line shows the coordinates of the mouse within the card on the document
+    // can be used to know where a character is in a game
+
+    document.body.style.backgroundColor = `rgb(${e.offsetX}, ${e.offsetY}, 40)`;
+    // background of the page changes color according to the X and Y coordinates of the mouse
+}
+
+// KEYBOARD & INPUT EVENTS
+const form = document.querySelector('form');                // Might want to select by class or id if there is more than one form tag
+const taskInput = document.getElementById('task');          // Fetching input element from document
+
+taskInput.value = '';                                       // Clears out "Walk the dog" line from input
+form.addEventListener('submit', runEvent);
+
+function runEvent(e){
+    console.log(`EVENT TYPE: ${e.type}`);                   // Returns EVENT TYPE: submit
+
+    console.log(taskInput.value);                           // Returns the user input value of the form line
+    console.log(e.target.value);                            // Logs the every character typed by the user
+
+    e.preventDefault();                                     // Prevents document from redirecting to index.php upon clicking submit
+}
+
+// Events we can add for user input
+// Keydown
+taskInput.addEventListener('keydown', runEvent);            // Document will return event type: keydown with every character typed
+// Keyup
+taskInput.addEventListener('keyup', runEvent);              // Will fire off when a ket is let go
+// Keypress
+taskInput.addEventListener('keypress', runEvent);
+// Focus
+taskInput.addEventListener('focus', runEvent);              // When you click inside an input space and it focuses there
+// Blur
+taskInput.addEventListener('focus', runEvent);              // When you click outside of an input and it unfocuses
+// Cut
+taskInput.addEventListener('cut', runEvent);                // Fires an event when the input text was cut
+// Paste
+taskInput.addEventListener('paste', runEvent);              // Fires an event when the input text was pasted on
+// Input
+taskInput.addEventListener('input', runEvent);              // Fires off on any input event
+
+// EVENT BUBBLING AND DELEGATION
+
+// Event bubbling --> bubbling up of events through the DOM
+document.querySelector('.card-title').addEventListener('click', function(){
+    console.log('card title');
+});
+// To prove the bubbling up of events we also place an event listener on its parents
+document.querySelector('.card-content').addEventListener('click', function(){
+    console.log('card content');
+});
+// And prove once again by placing an event lisenter on card-content's parents
+document.querySelector('.card').addEventListener('click', function(){
+    console.log('card');
+});
+// And once again
+document.querySelector('.col').addEventListener('click', function(){
+    console.log('col');
+});
+// All events will fire off once.card-title's text 'Task List' is clicked
+
+// Event delegation --> Opposite of event bubbling, needed when you have a list of similar elements 
+// and when you dynamically insert something in the DOM through JavaScript
+
+document.body.addEventListener('click', deleteItem);
+
+function deleteItem(e){
+    if(e.target.parentElement.className === 'fa fa-remove'){
+        console.log('delete item')
+    }
+}
+// Ensures that every x icon for each element works and that not only the top icon works
+// className only checks for one class name where as classList checks to see if name exist within the class list
+// Using classList is better to target links
+
+function deleteItem(e){
+    if(e.target.parentElement.classList.contains('delete-item')){
+        console.log('delete item');
+        e.target.parentElement.parentElement.remove();
+    }
+}
+// When x icon is clicked the referred item is removed
+
+// LOCAL & SESSION STORAGE
+// set local storage item
+
+localStorage.setItem('name', 'John');
+// In dev tools go to Application -> Storage -> Local Storage to find stored name and key
+// Set session storage item
+sessionStorage.setItem('name', 'Beth');
+// When the browser is restarted John's data will persist and Beth's data will be lost
+// Session storage is lost when the session is ended
+// remove from storage
+localStorage.removeItem('name');
+// get from storage
+const name = localStorage.getItem('name');
+// clear local storage and turns values to null
+localStorage.clear();
+
+// put user input into storage
+document.querySelector('form').addEventListener('submit', function(e){
+    const task = document.getElementById('task').value;
+    localStorage.setItem('task', task);
+    alert('Task saved');
+
+    e.preventDefault();
+});
+// The problem with this is that only one input can be added to the storage as the previous input will be replaced every time
+
+// put user input into storage
+document.querySelector('form').addEventListener('submit', function(e){
+    const task = document.getElementById('task').value;
+
+    let tasks;
+
+    if(localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    tasks.push(task);
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    alert('Task saved');
+
+    e.preventDefault();
+});
+// Let's user add more than one task without it being replaced
+
+// Presents items in the local Storage as an array so we can iterate through it to fetch items
+const tasks = JSON.parse(localStorage.getItem('tasks'));
+
+tasks.forEach(function(task){
+    console.log(task);
+})
